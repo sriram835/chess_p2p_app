@@ -1,0 +1,19 @@
+
+@startuml planning 
+allowmixing
+
+package "Game side" {
+	class chess_game
+	component renderer
+	renderer --|> chess_game
+}
+
+package "Network" {
+	component stun_function
+	component p2p_data_transfer
+	p2p_data_transfer --> stun_function
+}
+
+p2p_data_transfer --|> chess_game
+
+@enduml
