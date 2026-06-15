@@ -4,9 +4,11 @@
 #include "renderer.hpp"
 #include <iostream>
 #include <raylib.h>
+#include "connection.hpp"
 
 using namespace std;
 
+Chess_board board;
 Texture2D white_pawn_img;
 Texture2D white_rook_img;
 Texture2D white_bishop_img;
@@ -22,7 +24,6 @@ Texture2D black_queen_img;
 Texture2D black_king_img;
 
 int main() {
-  Chess_board board;
   InitWindow(screen_width, screen_height, "Game");
   white_pawn_img = LoadTexture("assets/white_pawn.png");
   white_rook_img = LoadTexture("assets/white_rook.png");
@@ -37,6 +38,10 @@ int main() {
   black_horse_img = LoadTexture("assets/black_horse.png");
   black_queen_img = LoadTexture("assets/black_queen.png");
   black_king_img = LoadTexture("assets/black_king.png");
+
+
+  connection();
+
 
   bool is_piece_selected = false;
   int selected_piece_row = -1;
@@ -66,7 +71,8 @@ int main() {
             board.make_move(
                 board.get_board()[selected_piece_row][selected_piece_col]
                     .piece_type,
-                selected_col, selected_row, selected_piece_col, selected_piece_row);
+                selected_col, selected_row, selected_piece_col,
+                selected_piece_row);
             is_piece_selected = false;
 
           } else {

@@ -21,6 +21,7 @@ struct Move {
   bool color;
 };
 
+
 class Chess_board {
 private:
   Chess_piece board[8][8];
@@ -34,3 +35,8 @@ public:
                  int prev_row);
   const Chess_piece (*get_board() const)[8] { return board; }
 };
+
+
+
+
+extern Chess_board board;
