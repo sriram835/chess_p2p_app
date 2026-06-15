@@ -8,6 +8,7 @@ The definition for Chess_board class methods are in this file.
 
 #include "chess_board.hpp"
 #include "consts.hpp"
+#include <iostream>
 
 Chess_board::Chess_board() {
   for (int i = 0; i < 8; i++) {
@@ -32,4 +33,160 @@ Chess_board::Chess_board() {
     board[7][g] = Chess_piece(horse, white, 7, g);
     board[7][h] = Chess_piece(rook, white, 7, h);
   }
+}
+
+bool Chess_board::is_valid_move(struct Move move) {
+
+  cout << "COLOR: " << move.color << " piece_type: " << move.piece->piece_type
+       << "\n";
+
+  if (move.piece->piece_type == -1) {
+    cout << "PIECE type is -1\n";
+    return false;
+  }
+
+  Chess_piece next_pos_piece = board[move.next_row][move.next_col];
+
+  if (next_pos_piece.color == move.piece->color &&
+      next_pos_piece.piece_type != -1) {
+
+    cout << "tried to take piece of same color\n";
+    return false;
+  }
+
+  switch (move.piece->piece_type) {
+
+  case pawn:
+    return is_valid_pawn_move(move);
+    break;
+  }
+
+  return true;
+}
+
+bool Chess_board::is_valid_pawn_move(struct Move move) {
+
+  if (abs(move.curr_row - move.next_row) == 2 &&
+      move.piece->is_first_move_done == true) {
+    cout << "PAWN tried to move 2 steps, but first move is done\n";
+    return false;
+  }
+
+  if (abs(move.curr_col - move.next_col) == 0 &&
+      board[move.next_row][move.next_col].piece_type != -1) {
+
+    cout << "Pawn tried to take piece directly in front\n";
+    return false;
+  }
+
+  if (move.piece->color == white) {
+    if (move.next_row - move.curr_row >= 0) {
+      cout << "White pawn tried to move backwards\n";
+      return false;
+    }
+
+    if (move.curr_col != move.next_col) {
+      if (abs(move.curr_row - move.next_row) > 1 ||
+          abs(move.curr_row - move.next_row) == 0) {
+        cout << "White pawn moved more than one row or did not move when col "
+                "is changed\n";
+        return false;
+      }
+
+      if (board[move.next_row][move.next_col].piece_type == -1) {
+        if (!move_record.empty()) {
+          struct Move last_move = move_record.back();
+
+          if (last_move.piece->piece_type != pawn) {
+            return false;
+          }
+
+          if (last_move.next_col != last_move.curr_col) {
+
+            return false;
+          }
+
+          if (abs(last_move.curr_row - last_move.next_row) != 2) {
+            return false;
+          }
+
+          if (last_move.next_col != move.next_col) {
+
+            return false;
+          }
+
+          if (last_move.next_row != move.curr_row) {
+
+            return false;
+          }
+        } else {
+
+          return false;
+        }
+      }
+
+    } else {
+      if (abs(move.curr_row - move.next_row) > 2 ||
+          abs(move.curr_row - move.next_row) == 0) {
+        cout << "White pawn moved more than 2 rows or did not move at all\n";
+        return false;
+      }
+    }
+
+  } else {
+
+    if (move.next_row - move.curr_row <= 0) {
+      return false;
+    }
+
+    if (move.curr_col != move.next_col) {
+      if (abs(move.curr_row - move.next_row) > 1 ||
+          abs(move.curr_row - move.next_row) == 0) {
+        return false;
+      }
+
+    } else {
+      if (abs(move.curr_row - move.next_row) > 2 ||
+          abs(move.curr_row - move.next_row) == 0) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+bool Chess_board::make_move(int piece_type, int curr_col, int curr_row,
+                            int prev_col, int prev_row) {
+
+  /*
+  cout << "CURR_COL: " << curr_col << "\n";
+  cout << "CURR_ROW: " << curr_row<< "\n";
+  cout << "PREV_COL: " << prev_col<< "\n";
+  cout << "PREV_ROW: " << prev_row<< "\n";
+  */
+
+  struct Move move;
+  Chess_piece piece = board[prev_row][prev_col];
+
+  move.piece = &piece;
+  move.color = piece.color;
+  move.curr_col = prev_col;
+  move.curr_row = prev_row;
+  move.next_col = curr_col;
+  move.next_row = curr_row;
+
+  if (!is_valid_move(move)) {
+    cout << "INVALID MOVE\n";
+    return false;
+  }
+
+  piece.position = {curr_row, curr_col};
+  piece.is_first_move_done = true;
+  move_record.push_back(move);
+
+  board[curr_row][curr_col] = piece;
+  board[prev_row][prev_col] = Chess_piece();
+
+  return true;
 }

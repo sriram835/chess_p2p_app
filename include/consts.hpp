@@ -28,3 +28,11 @@ const int king = 6;
 
 const int player = 0;
 const int enemy = 1;
+
+const int screen_width = 850;
+const int screen_height = 650;
+
+const int padding = 10;
+
+const int cellW = (screen_width - 2 * padding) / 8;
+const int cellH = (screen_height - 2 * padding) / 8;
