@@ -38,5 +38,4 @@ public:
 
 
 
-
 extern Chess_board board;
