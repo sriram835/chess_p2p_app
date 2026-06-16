@@ -114,10 +114,19 @@ void connection() {
   struct MappedAddress addr = get_mapped_address(sock);
   cout << addr.ip << " " << addr.port << "\n";
 
-  addr = get_mapped_address(sock);
-  cout << addr.ip << " " << addr.port << "\n";
+  struct MappedAddress enemy_addr;
+  std::cout << "Enter IP: ";
+  std::cin >> enemy_addr.ip;
 
-  addr = get_mapped_address(sock);
-  cout << addr.ip << " " << addr.port << "\n";
+  uint32_t port;
+  std::cout << "Enter port: ";
+  std::cin >> port;
+  enemy_addr.port = static_cast<uint16_t>(port);
+
+
+
+
+
+
   close(sock);
 }

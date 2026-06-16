@@ -17,6 +17,20 @@ add_executable(game_executable ${SOURCES})
 target_include_directories(game_executable PRIVATE include)
 
 
+if (WIN32)
+
+
+  set(RAYLIB_DIR "${CMAKE_SOURCE_DIR}/libs/raylib_win")
+	target_include_directories(game_executable PRIVATE "${RAYLIB_DIR}/include")
+	target_link_directories(game_executable PRIVATE "${RAYLIB_DIR}/lib")
+    target_link_libraries(game_executable PRIVATE
+        raylib
+        winmm
+        gdi32
+        opengl32
+    )
+
+else()
 target_include_directories(game_executable PRIVATE
 	"${CMAKE_SOURCE_DIR}/libs/raylib_linux/include"
 )
@@ -28,3 +42,6 @@ target_link_directories(game_executable PRIVATE
 target_link_libraries(game_executable PRIVATE
     raylib
 )
+
+
+endif()
