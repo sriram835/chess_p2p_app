@@ -54,14 +54,23 @@ bool Chess_board::is_valid_move(struct Move move) {
     return false;
   }
 
+  if (move.next_col == move.curr_col && move.next_row == move.curr_row) {
+    cout << "Tried to move a piece to the same position\n";
+    return false;
+  }
+
   switch (move.piece->piece_type) {
 
   case pawn:
     return is_valid_pawn_move(move);
     break;
+
+  case rook:
+    return is_valid_rook_move(move);
+    break;
   }
 
-  return true;
+  return false;
 }
 
 bool Chess_board::is_valid_pawn_move(struct Move move) {
@@ -188,5 +197,55 @@ bool Chess_board::make_move(int piece_type, int curr_col, int curr_row,
   board[curr_row][curr_col] = piece;
   board[prev_row][prev_col] = Chess_piece();
 
+  return true;
+}
+
+bool Chess_board::is_valid_rook_move(struct Move move) {
+
+  if (abs(move.curr_col - move.next_col) > 0 &&
+      abs(move.curr_row - move.next_row) > 0) {
+    cout << "Rook tried to move diagonally\n";
+    return false;
+  }
+
+  if (abs(move.next_col - move.curr_col) > 0) {
+
+    if (move.next_col > move.curr_col) {
+      for (int col = move.curr_col + 1; col < move.next_col; col++) {
+        if (board[move.curr_row][col].piece_type != -1) {
+          cout << "Rook tried to move over a piece\n";
+          return false;
+        }
+      }
+
+    } else {
+      for (int col = move.curr_col - 1; col > move.next_col; col--) {
+        if (board[move.curr_row][col].piece_type != -1) {
+          cout << "Rook tried to move over a piece\n";
+          return false;
+        }
+      }
+    }
+  }
+
+  if (abs(move.next_row - move.curr_row) > 0) {
+
+    if (move.next_row > move.curr_row) {
+      for (int row = move.curr_row + 1; row < move.next_row; row++) {
+        if (board[row][move.curr_col].piece_type != -1) {
+          cout << "Rook tried to move over a piece\n";
+          return false;
+        }
+      }
+
+    } else {
+      for (int row = move.curr_row - 1; row > move.next_row; row--) {
+        if (board[row][move.curr_col].piece_type != -1) {
+          cout << "Rook tried to move over a piece\n";
+          return false;
+        }
+      }
+    }
+  }
   return true;
 }

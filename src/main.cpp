@@ -1,10 +1,10 @@
 
 #include "chess_board.hpp"
+#include "connection.hpp"
 #include "consts.hpp"
 #include "renderer.hpp"
-#include <iostream>
 #include <raylib.h>
-#include "connection.hpp"
+#include <thread>
 
 using namespace std;
 
@@ -39,9 +39,7 @@ int main() {
   black_queen_img = LoadTexture("assets/black_queen.png");
   black_king_img = LoadTexture("assets/black_king.png");
 
-
-  connection();
-
+  thread conection_thread(connection);
 
   bool is_piece_selected = false;
   int selected_piece_row = -1;

@@ -112,7 +112,14 @@ void connection() {
   }
 
   struct MappedAddress addr = get_mapped_address(sock);
+  /*
   cout << addr.ip << " " << addr.port << "\n";
+
+  addr = get_mapped_address(sock);
+  cout << addr.ip << " " << addr.port << "\n";
+  addr = get_mapped_address(sock);
+  cout << addr.ip << " " << addr.port << "\n";
+  */
 
   struct MappedAddress enemy_addr;
   std::cout << "Enter IP: ";
@@ -120,13 +127,32 @@ void connection() {
 
   uint32_t port;
   std::cout << "Enter port: ";
-  std::cin >> port;
+   std::cin >> port;
   enemy_addr.port = static_cast<uint16_t>(port);
 
+  sockaddr_in sock_addr{};
+  sock_addr.sin_family = AF_INET;
+  sock_addr.sin_port = htons(enemy_addr.port);
 
+  inet_pton(AF_INET, enemy_addr.ip.c_str(), &sock_addr.sin_addr);
+  char punch_buffer[1024];
 
+  while (true) {
 
+    const char *msg = "Punch";
+    sendto(sock, msg, strlen(msg), 0, (sockaddr *)&sock_addr,
+           sizeof(sock_addr));
 
+    socklen_t len = sizeof(sock_addr);
+    int n = recvfrom(sock, punch_buffer, sizeof(punch_buffer) - 1, 0,
+                     (sockaddr *)&sock_addr, &len);
+
+    if (n > 0) {
+      punch_buffer[n] = '\0';
+      cout << "Received: " << punch_buffer << "\n";
+      break;
+    }
+  }
 
   close(sock);
 }

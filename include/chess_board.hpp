@@ -21,12 +21,12 @@ struct Move {
   bool color;
 };
 
-
 class Chess_board {
 private:
   Chess_piece board[8][8];
   bool is_valid_move(struct Move move);
   bool is_valid_pawn_move(struct Move move);
+  bool is_valid_rook_move(struct Move move);
   vector<Move> move_record;
 
 public:
@@ -35,7 +35,5 @@ public:
                  int prev_row);
   const Chess_piece (*get_board() const)[8] { return board; }
 };
-
-
 
 extern Chess_board board;
