@@ -30,6 +30,10 @@ if (WIN32)
         opengl32
     )
 
+elseif (ANDROID) 
+find_package(raylib REQUIRED)
+target_link_libraries(game_executable PRIVATE raylib)
+
 else()
 target_include_directories(game_executable PRIVATE
 	"${CMAKE_SOURCE_DIR}/libs/raylib_linux/include"
